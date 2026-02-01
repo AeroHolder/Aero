@@ -1924,7 +1924,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 				local KeyFound = false
 				local FoundKey = ''
 				local AttemptKey = KeyMain.Input.InputBox.Text
-				local validKey, expiredData = attemptValidateKey(savedKeys)
+				local validKey, expiredData = attemptValidateKey(AttemptKey)
 				if validKey and checkIfExpiredKey(expiredData) then
 					KeyFound = true
 					FoundKey = AttemptKey
