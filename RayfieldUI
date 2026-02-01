@@ -1069,7 +1069,10 @@ local function validateKey(token, userId)
 		})
 	end)
 	local data = HttpService:JSONDecode(response['Body'])
-	return data.valid == true, data.expiresAt/1000
+	if data and data.valid and data.expiresAt then
+		return data.valid == true, data.expiresAt/1000
+	end
+	return data.valid == true, data.expiresAt
 end
 
 local function attemptValidateKey(key)
