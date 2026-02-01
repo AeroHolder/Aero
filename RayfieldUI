@@ -1046,51 +1046,43 @@ local function getUA()
 end
 
 local function validateKey(token, userId)
-    local url = string.format(
-        "https://hub.aero.nu/api/keys/%s/validate?userId=%s",
-        HttpService:UrlEncode(token),
-        HttpService:UrlEncode(userId)
-    )
+	local Player = Players.LocalPlayer
 
-    local ok, res = pcall(function()
-        return httprequest({
-            Url = url,
-            Method = "GET",
-            Headers = {
-                ["Accept"] = "application/json",
-                ["User-Agent"] = 'AeroSubmitKey:'..tostring(getUA())
-            }
-        })
-    end)
+	local base = string.format(
+		"https://hub.aero.nu/api/keys/%s/validate",
+		HttpService:UrlEncode(token)
+	)
 
-    if not ok or not res or not res.Body then
-        return false
-    end
+	local url = base
+	if userId and userId ~= "" then
+		url = base .. "?userId=" .. HttpService:UrlEncode(userId)
+	end
 
-    if res.StatusCode and res.StatusCode ~= 200 then
-        return false
-    end
-
-    local data
-    ok, data = pcall(function()
-        return HttpService:JSONDecode(res.Body)
-    end)
-
-    if not ok or type(data) ~= "table" then
-        return false
-    end
-
-    if data.valid ~= true then
-        return false
-    end
-
-    return true, data.expiresAt
+	local ok, response = pcall(function()
+		return httprequest({
+			Url = url,
+			Method = "GET",
+			Headers = {
+				["Accept"] = "application/json",
+				["User-Agent"] = "Executor-Used: " .. tostring(getUA()),
+			}
+		})
+	end)
+	local data = HttpService:JSONDecode(response['Body'])
+	return data.valid == true, data.expiresAt/1000
 end
 
 local function attemptValidateKey(key)
 	local valid, expiresAt = validateKey(key, Players.LocalPlayer.UserId)
 	return valid, expiresAt
 end
+local function checkIfExpiredKey(expireData)
+	if expireData > os.time() then
+		return true
+	end
+	return false
+end
+
 function RayfieldLibrary:Notify(data) -- action e.g open messages
 	task.spawn(function()
 
@@ -1850,7 +1842,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 
 		if callSafely(isfile, RayfieldFolder.."/Key System".."/"..Settings.KeySettings.FileName..ConfigurationExtension) then
 			local savedKeys = callSafely(readfile, RayfieldFolder.."/Key System".."/"..Settings.KeySettings.FileName..ConfigurationExtension)
-			if attemptValidateKey(savedKeys) then
+			local validKey, expiredData = attemptValidateKey(savedKeys)
+			if validKey and checkIfExpiredKey(expiredData) then
 				Passthrough = true
 			end
 		end
@@ -1931,7 +1924,8 @@ function RayfieldLibrary:CreateWindow(Settings)
 				local KeyFound = false
 				local FoundKey = ''
 				local AttemptKey = KeyMain.Input.InputBox.Text
-				if attemptValidateKey(AttemptKey) then
+				local validKey, expiredData = attemptValidateKey(savedKeys)
+				if validKey and checkIfExpiredKey(expiredData) then
 					KeyFound = true
 					FoundKey = AttemptKey
 				end
