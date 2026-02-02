@@ -1,0 +1,21 @@
+local IsRunning = false
+
+local function LoadScript(ScriptURL, PlaceID)
+	if game.PlaceId == PlaceID and IsRunning == false then
+		IsRunning = true
+		loadstring(game:HttpGet(ScriptURL))()
+	end
+end
+
+local function LoadHub()
+    -- Game: [🌋] Fish It! 🐟
+	LoadScript("LINK", 121864768012064)
+ 
+    -- Game: Escape Tsunami For Brainrots!
+	LoadScript("LINK", 131623223084840)
+ 
+	-- Game: [UPD]⛏️ Break a Lucky Block!
+	LoadScript("LINK", 124311897657957)
+end
+
+LoadHub()
