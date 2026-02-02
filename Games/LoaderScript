@@ -9,13 +9,13 @@ end
 
 local function LoadHub()
     -- Game: [🌋] Fish It! 🐟
-	LoadScript("LINK", 121864768012064)
+	LoadScript("https://raw.githubusercontent.com/AeroHolder/Aero/refs/heads/main/Games/Fish%20It!.lua", 121864768012064)
  
     -- Game: Escape Tsunami For Brainrots!
-	LoadScript("LINK", 131623223084840)
+	LoadScript("https://raw.githubusercontent.com/AeroHolder/Aero/refs/heads/main/Games/Escape%20Tsunami%20For%20Brainrots.lua", 131623223084840)
  
 	-- Game: [UPD]⛏️ Break a Lucky Block!
-	LoadScript("LINK", 124311897657957)
+	LoadScript("https://raw.githubusercontent.com/AeroHolder/Aero/refs/heads/main/Games/Break%20a%20Lucky%20Block.lua", 124311897657957)
 end
 
 LoadHub()
